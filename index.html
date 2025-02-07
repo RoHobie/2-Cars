@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2 Cars</title>
+    <title>1 Car Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="logic.js"></script>
     <style>
         .canvas {
             width: 200px;
@@ -31,11 +30,13 @@
             background: red;
             transition: left 0.2s;
         }
-        .left { left: 29px; }
-        .right { left: 129px; }
+        .left { left: 28px; }
+        
+        .right { left: 130px; }
+
         .obstacle {
-            width: 40px;
-            height: 60px;
+            width: 34px;
+            height: 34px;
             position: absolute;
             top: -60px;
             background: blue;
@@ -43,16 +44,70 @@
     </style>
 </head>
 <body class="flex justify-center items-center h-screen bg-gray-900">
-    <div class="canvas bg-green relative">
+    <div class="canvas bg-black relative">
         <div class="divider"></div>
         <div id="car" class="car left"></div>
     </div>
     <script>
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'a' || event.key === 'l') {
-                document.getElementById('car').classList.toggle('left');
-                document.getElementById('car').classList.toggle('right');
-            }
-        });
+    if (event.key === 'a' || event.key === 'l') {
+        document.getElementById('car').classList.toggle('left');
+        document.getElementById('car').classList.toggle('right');
+    }
+});
+
+function createObstacle() {
+    const gameContainer = document.querySelector('.canvas');
+    const obstacle = document.createElement('div');
+    obstacle.classList.add('obstacle');
+
+    // Randomly choose a lane (left or right)
+    const lane = Math.random() < 0.5 ? 'left' : 'right';
+    obstacle.classList.add(lane);
+
+    obstacle.style.left = lane === 'left' ? '31px' : '133px';
+    obstacle.style.top = '-60px'; // Start above the game container
+    gameContainer.appendChild(obstacle);
+
+    // Move the obstacle down
+    let position = -60;
+    const interval = setInterval(() => {
+        position += 3;
+        obstacle.style.top = position + 'px';
+
+        checkCollision(obstacle);
+
+        // Remove obstacle when it moves out of the game container
+        if (position > 500) {
+            obstacle.remove();
+            clearInterval(interval);
+        }
+    }, 50);
+}
+
+function checkCollision(obstacle) {
+    const car = document.getElementById('car');
+    const carRect = car.getBoundingClientRect();
+    const obstacleRect = obstacle.getBoundingClientRect();
+
+    if (
+        carRect.left < obstacleRect.right &&
+        carRect.right > obstacleRect.left &&
+        carRect.top < obstacleRect.bottom &&
+        carRect.bottom > obstacleRect.top
+    ) {
+        gameOver();
+    }
+}
+
+function gameOver() {
+    alert("Game Over! Refresh to restart.");
+    location.reload(); // Restart the game
+}
+
+// Generate obstacles at random intervals
+setInterval(createObstacle, 2500);
+
     </script>
 </body>
+</html>
