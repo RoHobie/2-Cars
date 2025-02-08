@@ -4,86 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1 Car Game</title>
+    <title>2 Car Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .canvas {
-            width: 200px;
-            height: 500px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid white;
-        }
-
-        .divider {
-            width: 4px;
-            height: 100%;
-            background: white;
-            position: absolute;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
-        }
-
-        .car {
-            width: 40px;
-            height: 60px;
-            position: absolute;
-            bottom: 20px;
-            background: red;
-            transition: left 0.2s;
-        }
-
-        .left {
-            left: 28px;
-        }
-
-        .right {
-            left: 130px;
-        }
-
-        .obstacle {
-            width: 34px;
-            height: 34px;
-            position: absolute;
-            top: -60px;
-            background: blue;
-        }
-
-        .point {
-            width: 31px;
-            height: 31px;
-            position: absolute;
-            top: -60px;
-            background: yellow;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="entities.css">
+    <script src="controls.js"></script>
 </head>
 
 <body class="flex justify-center items-center h-screen bg-gray-900">
-    <div class="canvas bg-black relative">
-        <div class="divider"></div>
-        <div id="car" class="car left"></div>
-        <div id="score" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
+    <!-- First Game -->
+    <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
+        <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
+        <div id="car1" class="car left bg-red-500"></div>
+        <div id="score1" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     </div>
+
+    <!-- Second Game -->
+    <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
+        <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
+        <div id="car2" class="car left bg-red-500"></div>
+        <div id="score2" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
+    </div>
+
     <script>
-
-        let score = 0;
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'a' || event.key === 'l') {
-                document.getElementById('car').classList.toggle('left');
-                document.getElementById('car').classList.toggle('right');
-            }
-        });
-
-        function createObstacle() {
-            const gameContainer = document.querySelector('.canvas');
+        function createObstacle(gameId) {
+            const gameContainer = document.getElementById(gameId);
             const obstacle = document.createElement('div');
-            obstacle.classList.add('obstacle');
+            obstacle.classList.add('obstacle', 'bg-blue-500');
 
             const lane = Math.random() < 0.5 ? 'left' : 'right';
-            obstacle.style.left = lane === 'left' ? '31px' : '133px';
+            obstacle.style.left = lane === 'left' ? '45px' : '175px';
             obstacle.style.top = '-60px';
             gameContainer.appendChild(obstacle);
 
@@ -93,9 +42,9 @@
             function moveObstacle() {
                 position += speed;
                 obstacle.style.top = position + 'px';
-                checkCollision(obstacle);
+                checkCollision(obstacle, gameId);
 
-                if (position < 500) {
+                if (position < 760) {
                     requestAnimationFrame(moveObstacle);
                 } else {
                     obstacle.remove();
@@ -105,23 +54,23 @@
             requestAnimationFrame(moveObstacle);
         }
 
-        function createPoint() {
-            const gameContainer = document.querySelector('.canvas');
-            const lastObstacle = document.querySelector('.obstacle:last-child');
+        function createPoint(gameId) {
+            const gameContainer = document.getElementById(gameId);
+            const lastObstacle = gameContainer.querySelector('.obstacle:last-child');
             const point = document.createElement('div');
-            point.classList.add('point');
+            point.classList.add('point', 'bg-yellow-400', 'rounded-full');
 
             let safeToSpawn = true;
             if (lastObstacle) {
                 const obstacleTop = parseInt(lastObstacle.style.top, 10);
-                if (obstacleTop > -60 && obstacleTop < 120) { // Ensure at least 100px gap
+                if (obstacleTop > -60 && obstacleTop < 120) {
                     safeToSpawn = false;
                 }
             }
             if (!safeToSpawn) return;
 
             const lane = Math.random() < 0.5 ? 'left' : 'right';
-            point.style.left = lane === 'left' ? '31px' : '133px';
+            point.style.left = lane === 'left' ? '45px' : '175px';
             point.style.top = '-60px';
             gameContainer.appendChild(point);
 
@@ -131,23 +80,22 @@
             function movePoint() {
                 position += speed;
                 point.style.top = position + 'px';
-                if (checkPointCollection(point)) {
-                    return; // Stop execution if the point was collected
+                if (checkPointCollection(point, gameId)) {
+                    return;
                 }
 
-                if (position < 500) {
+                if (position < 760) {
                     requestAnimationFrame(movePoint);
                 } else {
-                    gameOver(); // Ends the game if the point is missed
+                    gameOver(gameId);
                 }
-
             }
 
             requestAnimationFrame(movePoint);
         }
 
-        function checkCollision(obstacle) {
-            const car = document.getElementById('car');
+        function checkCollision(obstacle, gameId) {
+            const car = document.querySelector(`#${gameId.replace('game', 'car')}`);
             const carRect = car.getBoundingClientRect();
             const obstacleRect = obstacle.getBoundingClientRect();
 
@@ -157,12 +105,12 @@
                 carRect.top < obstacleRect.bottom &&
                 carRect.bottom > obstacleRect.top
             ) {
-                gameOver();
+                gameOver(gameId);
             }
         }
 
-        function checkPointCollection(point) {
-            const car = document.getElementById('car');
+        function checkPointCollection(point, gameId) {
+            const car = document.querySelector(`#${gameId.replace('game', 'car')}`);
             const carRect = car.getBoundingClientRect();
             const pointRect = point.getBoundingClientRect();
 
@@ -173,32 +121,39 @@
                 carRect.bottom > pointRect.top
             ) {
                 point.remove();
-                score++;
-                document.getElementById('score').innerText = `Score: ${score}`;
-                return true; //point collected
+                const gameNumber = gameId.replace('game', '');
+                if (gameNumber === '1') {
+                    score1++;
+                    document.getElementById('score1').innerText = `Score: ${score1}`;
+                } else {
+                    score2++;
+                    document.getElementById('score2').innerText = `Score: ${score2}`;
+                }
+                return true;
             }
-            return false; //point not collected yet
+            return false;
         }
 
-        function gameOver() {
-            alert("Game Over! Refresh to restart.");
+        function gameOver(gameId) {
+            alert(`Game Over! Refresh to restart.`);
             location.reload();
         }
 
-        function spawnObject() {
+        function spawnObject(gameId) {
             const chance = Math.random();
 
             if (chance < 0.6) {
-                createObstacle();
+                createObstacle(gameId);
             } else {
-                createPoint();
+                createPoint(gameId);
             }
 
-            // Schedule the next spawn at a random time
-            setTimeout(spawnObject, Math.random() * 1000 + 1000); // Between 1s and 2.5s
+            setTimeout(() => spawnObject(gameId), Math.random() * 1000 + 1000);
         }
 
-        spawnObject();
+        // Start both games
+        spawnObject('game1');
+        spawnObject('game2');
     </script>
 </body>
 
