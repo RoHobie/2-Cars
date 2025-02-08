@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             overflow: hidden;
             border: 2px solid white;
         }
+
         .divider {
             width: 4px;
             height: 100%;
@@ -22,6 +24,7 @@
             top: 0;
             transform: translateX(-50%);
         }
+
         .car {
             width: 40px;
             height: 60px;
@@ -30,9 +33,14 @@
             background: red;
             transition: left 0.2s;
         }
-        .left { left: 28px; }
-        
-        .right { left: 130px; }
+
+        .left {
+            left: 28px;
+        }
+
+        .right {
+            left: 130px;
+        }
 
         .obstacle {
             width: 34px;
@@ -41,73 +49,157 @@
             top: -60px;
             background: blue;
         }
+
+        .point {
+            width: 31px;
+            height: 31px;
+            position: absolute;
+            top: -60px;
+            background: yellow;
+            border-radius: 50%;
+        }
     </style>
 </head>
+
 <body class="flex justify-center items-center h-screen bg-gray-900">
     <div class="canvas bg-black relative">
         <div class="divider"></div>
         <div id="car" class="car left"></div>
+        <div id="score" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     </div>
     <script>
+
+        let score = 0;
         document.addEventListener('keydown', (event) => {
-    if (event.key === 'a' || event.key === 'l') {
-        document.getElementById('car').classList.toggle('left');
-        document.getElementById('car').classList.toggle('right');
-    }
-});
+            if (event.key === 'a' || event.key === 'l') {
+                document.getElementById('car').classList.toggle('left');
+                document.getElementById('car').classList.toggle('right');
+            }
+        });
 
-function createObstacle() {
-    const gameContainer = document.querySelector('.canvas');
-    const obstacle = document.createElement('div');
-    obstacle.classList.add('obstacle');
+        function createObstacle() {
+            const gameContainer = document.querySelector('.canvas');
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
 
-    // Randomly choose a lane (left or right)
-    const lane = Math.random() < 0.5 ? 'left' : 'right';
-    obstacle.classList.add(lane);
+            const lane = Math.random() < 0.5 ? 'left' : 'right';
+            obstacle.style.left = lane === 'left' ? '31px' : '133px';
+            obstacle.style.top = '-60px';
+            gameContainer.appendChild(obstacle);
 
-    obstacle.style.left = lane === 'left' ? '31px' : '133px';
-    obstacle.style.top = '-60px'; // Start above the game container
-    gameContainer.appendChild(obstacle);
+            let position = -60;
+            let speed = 3;
 
-    // Move the obstacle down
-    let position = -60;
-    const interval = setInterval(() => {
-        position += 3;
-        obstacle.style.top = position + 'px';
+            function moveObstacle() {
+                position += speed;
+                obstacle.style.top = position + 'px';
+                checkCollision(obstacle);
 
-        checkCollision(obstacle);
+                if (position < 500) {
+                    requestAnimationFrame(moveObstacle);
+                } else {
+                    obstacle.remove();
+                }
+            }
 
-        // Remove obstacle when it moves out of the game container
-        if (position > 500) {
-            obstacle.remove();
-            clearInterval(interval);
+            requestAnimationFrame(moveObstacle);
         }
-    }, 50);
-}
 
-function checkCollision(obstacle) {
-    const car = document.getElementById('car');
-    const carRect = car.getBoundingClientRect();
-    const obstacleRect = obstacle.getBoundingClientRect();
+        function createPoint() {
+            const gameContainer = document.querySelector('.canvas');
+            const lastObstacle = document.querySelector('.obstacle:last-child');
+            const point = document.createElement('div');
+            point.classList.add('point');
 
-    if (
-        carRect.left < obstacleRect.right &&
-        carRect.right > obstacleRect.left &&
-        carRect.top < obstacleRect.bottom &&
-        carRect.bottom > obstacleRect.top
-    ) {
-        gameOver();
-    }
-}
+            let safeToSpawn = true;
+            if (lastObstacle) {
+                const obstacleTop = parseInt(lastObstacle.style.top, 10);
+                if (obstacleTop > -60 && obstacleTop < 120) { // Ensure at least 100px gap
+                    safeToSpawn = false;
+                }
+            }
+            if (!safeToSpawn) return;
 
-function gameOver() {
-    alert("Game Over! Refresh to restart.");
-    location.reload(); // Restart the game
-}
+            const lane = Math.random() < 0.5 ? 'left' : 'right';
+            point.style.left = lane === 'left' ? '31px' : '133px';
+            point.style.top = '-60px';
+            gameContainer.appendChild(point);
 
-// Generate obstacles at random intervals
-setInterval(createObstacle, 2500);
+            let position = -60;
+            let speed = 3;
 
+            function movePoint() {
+                position += speed;
+                point.style.top = position + 'px';
+                if (checkPointCollection(point)) {
+                    return; // Stop execution if the point was collected
+                }
+
+                if (position < 500) {
+                    requestAnimationFrame(movePoint);
+                } else {
+                    gameOver(); // Ends the game if the point is missed
+                }
+
+            }
+
+            requestAnimationFrame(movePoint);
+        }
+
+        function checkCollision(obstacle) {
+            const car = document.getElementById('car');
+            const carRect = car.getBoundingClientRect();
+            const obstacleRect = obstacle.getBoundingClientRect();
+
+            if (
+                carRect.left < obstacleRect.right &&
+                carRect.right > obstacleRect.left &&
+                carRect.top < obstacleRect.bottom &&
+                carRect.bottom > obstacleRect.top
+            ) {
+                gameOver();
+            }
+        }
+
+        function checkPointCollection(point) {
+            const car = document.getElementById('car');
+            const carRect = car.getBoundingClientRect();
+            const pointRect = point.getBoundingClientRect();
+
+            if (
+                carRect.left < pointRect.right &&
+                carRect.right > pointRect.left &&
+                carRect.top < pointRect.bottom &&
+                carRect.bottom > pointRect.top
+            ) {
+                point.remove();
+                score++;
+                document.getElementById('score').innerText = `Score: ${score}`;
+                return true; //point collected
+            }
+            return false; //point not collected yet
+        }
+
+        function gameOver() {
+            alert("Game Over! Refresh to restart.");
+            location.reload();
+        }
+
+        function spawnObject() {
+            const chance = Math.random();
+
+            if (chance < 0.6) {
+                createObstacle();
+            } else {
+                createPoint();
+            }
+
+            // Schedule the next spawn at a random time
+            setTimeout(spawnObject, Math.random() * 1000 + 1000); // Between 1s and 2.5s
+        }
+
+        spawnObject();
     </script>
 </body>
+
 </html>
