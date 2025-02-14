@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -7,154 +8,22 @@
     <title>2 Car Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="entities.css">
-    <script src="controls.js"></script>
 </head>
 
 <body class="flex justify-center items-center h-screen bg-gray-900">
+    <div id="score1" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     <!-- First Game -->
     <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
         <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
         <div id="car1" class="car left bg-red-500"></div>
-        <div id="score1" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     </div>
-
+    
     <!-- Second Game -->
     <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
         <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
         <div id="car2" class="car left bg-red-500"></div>
-        <div id="score2" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     </div>
-
-    <script>
-        function createObstacle(gameId) {
-            const gameContainer = document.getElementById(gameId);
-            const obstacle = document.createElement('div');
-            obstacle.classList.add('obstacle', 'bg-blue-500');
-
-            const lane = Math.random() < 0.5 ? 'left' : 'right';
-            obstacle.style.left = lane === 'left' ? '45px' : '175px';
-            obstacle.style.top = '-60px';
-            gameContainer.appendChild(obstacle);
-
-            let position = -60;
-            let speed = 3;
-
-            function moveObstacle() {
-                position += speed;
-                obstacle.style.top = position + 'px';
-                checkCollision(obstacle, gameId);
-
-                if (position < 760) {
-                    requestAnimationFrame(moveObstacle);
-                } else {
-                    obstacle.remove();
-                }
-            }
-
-            requestAnimationFrame(moveObstacle);
-        }
-
-        function createPoint(gameId) {
-            const gameContainer = document.getElementById(gameId);
-            const lastObstacle = gameContainer.querySelector('.obstacle:last-child');
-            const point = document.createElement('div');
-            point.classList.add('point', 'bg-yellow-400', 'rounded-full');
-
-            let safeToSpawn = true;
-            if (lastObstacle) {
-                const obstacleTop = parseInt(lastObstacle.style.top, 10);
-                if (obstacleTop > -60 && obstacleTop < 120) {
-                    safeToSpawn = false;
-                }
-            }
-            if (!safeToSpawn) return;
-
-            const lane = Math.random() < 0.5 ? 'left' : 'right';
-            point.style.left = lane === 'left' ? '45px' : '175px';
-            point.style.top = '-60px';
-            gameContainer.appendChild(point);
-
-            let position = -60;
-            let speed = 3;
-
-            function movePoint() {
-                position += speed;
-                point.style.top = position + 'px';
-                if (checkPointCollection(point, gameId)) {
-                    return;
-                }
-
-                if (position < 760) {
-                    requestAnimationFrame(movePoint);
-                } else {
-                    gameOver(gameId);
-                }
-            }
-
-            requestAnimationFrame(movePoint);
-        }
-
-        function checkCollision(obstacle, gameId) {
-            const car = document.querySelector(`#${gameId.replace('game', 'car')}`);
-            const carRect = car.getBoundingClientRect();
-            const obstacleRect = obstacle.getBoundingClientRect();
-
-            if (
-                carRect.left < obstacleRect.right &&
-                carRect.right > obstacleRect.left &&
-                carRect.top < obstacleRect.bottom &&
-                carRect.bottom > obstacleRect.top
-            ) {
-                gameOver(gameId);
-            }
-        }
-
-        function checkPointCollection(point, gameId) {
-            const car = document.querySelector(`#${gameId.replace('game', 'car')}`);
-            const carRect = car.getBoundingClientRect();
-            const pointRect = point.getBoundingClientRect();
-
-            if (
-                carRect.left < pointRect.right &&
-                carRect.right > pointRect.left &&
-                carRect.top < pointRect.bottom &&
-                carRect.bottom > pointRect.top
-            ) {
-                point.remove();
-                const gameNumber = gameId.replace('game', '');
-                if (gameNumber === '1') {
-                    score1++;
-                    document.getElementById('score1').innerText = `Score: ${score1}`;
-                } else {
-                    score2++;
-                    document.getElementById('score2').innerText = `Score: ${score2}`;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        function gameOver(gameId) {
-            alert(`Game Over! Refresh to restart.`);
-            location.reload();
-        }
-
-        function spawnObject(gameId) {
-            const chance = Math.random();
-
-            if (chance < 0.6) {
-                createObstacle(gameId);
-            } else {
-                createPoint(gameId);
-            }
-
-            setTimeout(() => spawnObject(gameId), Math.random() * 1000 + 1000);
-        }
-
-        // Start both games
-        spawnObject('game1');
-        spawnObject('game2');
-    </script>
+    <script src="game.js"></script>
 </body>
 
 </html>
