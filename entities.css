@@ -4,26 +4,66 @@
     position: absolute;
     bottom: 80px;
     transition: left 0.2s;
-}
-
-.left {
+  }
+  .left {
     left: 39px;
-}
-
-.right {
-    left: 171px;
-}
-
-.obstacle {
+  }
+  .right {
+    left: 169px;
+  }
+  .obstacle {
     width: 38px;
     height: 38px;
     position: absolute;
     top: -60px;
-}
-
-.point {
+  }
+  .point {
     width: 38px;
     height: 38px;
     position: absolute;
     top: -60px;
-}
+  }
+  
+  /* Difficulty indicators */
+  .difficulty-easy {
+    border: 2px solid #22c55e; /* Green border */
+  }
+  .difficulty-medium {
+    border: 2px solid #eab308; /* Yellow border */
+  }
+  .difficulty-hard {
+    border: 2px solid #ef4444; /* Red border */
+    animation: pulsate 0.5s infinite alternate;
+  }
+  #game-over-overlay, #start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+  }
+  
+  .game-active #score1,
+  .game-active #level-indicator {
+    opacity: 1;
+  }
+  
+  /* Pulsating animation for hard difficulty */
+  @keyframes pulsate {
+    from { opacity: 0.8; }
+    to { opacity: 1; }
+  }
+  
+  /* Current level indicator */
+  #level-indicator {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    z-index: 50;
+    background-color: #22c55e;
+    color: white;
+  }
