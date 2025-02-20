@@ -9,19 +9,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="entities.css">
 </head>
-
 <body class="flex justify-center items-center h-screen bg-gray-900">
     <div id="score1" class="absolute top-4 left-4 text-white text-lg">Score: 0</div>
     <!-- First Game -->
     <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
-        <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
         <div id="car1" class="car left bg-red-500"></div>
     </div>
     
     <!-- Second Game -->
     <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-black">
-        <div class="absolute w-1 h-full bg-white left-1/2 top-0 transform -translate-x-1/2"></div>
-        <div id="car2" class="car left bg-red-500"></div>
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+        <div id="car2" class="car left bg-blue-800"></div>
     </div>
     <script src="game.js"></script>
 </body>
