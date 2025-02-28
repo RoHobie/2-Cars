@@ -16,38 +16,44 @@ class Game {
   
     // Update speed based on score
     updateDifficulty() {
-      if (globalScore >= 100) {
+      // Update immediately when score thresholds are crossed
+      if (globalScore >= 70) {
         this.currentSpeed = this.baseSpeed * 2.5; // 2.5x speed at 70+ points
-      } else if (globalScore >= 60) {
+      } else if (globalScore >= 50) {
         this.currentSpeed = this.baseSpeed * 2.0; // 2x speed at 50-69 points
-      } else if (globalScore >= 25) {
+      } else if (globalScore >= 20) {
         this.currentSpeed = this.baseSpeed * 1.5; // 1.5x speed at 20-49 points
       } else {
         this.currentSpeed = this.baseSpeed; // Base speed below 20 points
       }
     }
-  
+    
     spawnObject() {
-        if (this.gameOverFlag) return;
+      if (this.gameOverFlag) return;
       
-        // Update difficulty before spawning new objects
-        this.updateDifficulty();
+      // Force difficulty update on every spawn
+      this.updateDifficulty();
       
-        const chance = Math.random();
-        if (chance < 0.6) {
-          this.createObstacle();
-        } else {
-          this.createPoint();
-        }
-      
-        // Immediately restart spawn cycle at new speed
-        clearTimeout(this.spawnTimeout);
-      
-        // Adjust spawn rate dynamically
-        const spawnDelay = Math.max(200, 1200 - (globalScore * 15));
-        this.spawnTimeout = setTimeout(() => this.spawnObject(), Math.random() * 300 + spawnDelay);
+      const chance = Math.random();
+      if (chance < 0.6) {
+        this.createObstacle();
+      } else {
+        this.createPoint();
       }
       
+      // Immediately restart spawn cycle at new speed
+      clearTimeout(this.spawnTimeout);
+      
+      // Increased minimum gap at highest difficulty level
+      const minGap = globalScore >= 70 ? 600 : (globalScore >= 50 ? 350 : 250);
+      
+      // Reduced score multiplier from 10 to 8 for a gentler curve
+      const spawnDelay = Math.max(minGap, 1200 - (globalScore * 8));
+      
+      // Further reduced randomness at max difficulty
+      const randomVariation = globalScore >= 70 ? 75 : 300;
+      this.spawnTimeout = setTimeout(() => this.spawnObject(), Math.random() * randomVariation + spawnDelay);
+    }  
       
   
     createObstacle() {
@@ -295,11 +301,11 @@ class Game {
     // Handle car movement
     document.addEventListener('keydown', (event) => {
       if (!playAgainVisible && start) { // Only process keystrokes if game is active and started
-        if (event.key === 'a') {
+        if (event.key === 'a'||event.key === 'ArrowLeft') {
           document.getElementById('car1').classList.toggle('left');
           document.getElementById('car1').classList.toggle('right');
         }
-        if (event.key === 'd') {
+        if (event.key === 'd'|event.key === 'ArrowRight') {
           document.getElementById('car2').classList.toggle('left');
           document.getElementById('car2').classList.toggle('right');
         }

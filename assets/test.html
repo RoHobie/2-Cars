@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Car</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex justify-center items-center h-screen bg-gray-900">
+
+    <div class="relative w-[60px] h-[100px]">
+        <!-- Car Body -->
+        <div class="absolute bottom-0 w-full h-[50px] bg-red-500 rounded-lg"></div>
+        
+        <!-- Roof -->
+        <div class="absolute bottom-[50px] left-1/2 w-[40px] h-[30px] bg-red-500 rounded-t-lg transform -translate-x-1/2"></div>
+
+        <!-- Windows -->
+        <div class="absolute bottom-[55px] left-[5px] w-[15px] h-[20px] bg-blue-300 rounded-sm"></div>
+        <div class="absolute bottom-[55px] right-[5px] w-[15px] h-[20px] bg-blue-300 rounded-sm"></div>
+
+        <!-- Wheels -->
+        <div class="absolute bottom-[-5px] left-[5px] w-[15px] h-[15px] bg-black rounded-full"></div>
+        <div class="absolute bottom-[-5px] right-[5px] w-[15px] h-[15px] bg-black rounded-full"></div>
+    </div>
+
+</body>
+</html>
