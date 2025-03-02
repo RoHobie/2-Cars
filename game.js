@@ -57,11 +57,11 @@ class Game {
       
   
     createObstacle() {
-      this.createEntity('obstacle', 'bg-blue-500');
+      this.createEntity('obstacle', 'bg-blue-600');
     }
   
     createPoint() {
-      this.createEntity('point', 'bg-yellow-400 rounded-full');
+      this.createEntity('point', 'bg-red-500 rounded-full');
     }
   
     createEntity(type, className) {
@@ -161,7 +161,7 @@ class Game {
   let gameInstances = [];
   let playAgainVisible = false;
   let start = false; // New flag for game start
-  const scoreElement = document.getElementById('score1');
+  const scoreElement = document.getElementById('score');
   
   function updateGlobalScore() {
     globalScore++;
