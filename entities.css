@@ -1,6 +1,6 @@
 .car {
-    width: 50px;
-    height: 70px;
+    width: 51px;
+    height: 90px;
     position: absolute;
     bottom: 80px;
     transition: left 0.2s;
@@ -28,17 +28,15 @@
     height: 38px;
     position: absolute;
     top: -60px;
+    border: 6px solid white; /* Thick white border */
+    border-radius: 8px;      /* Slight curve on the white border */
+    box-sizing: border-box; /* Include border in width/height calculation */
+    outline: 3px solid #e70f00; /* Example blue outline - change as needed */
+    outline-offset: 0px;
   }
   
   /* Difficulty indicators */
-  .difficulty-easy {
-    border: 2px solid #22c55e; /* Green border */
-  }
-  .difficulty-medium {
-    border: 2px solid #eab308; /* Yellow border */
-  }
-  .difficulty-hard {
-    border: 2px solid #ef4444; /* Red border */
+  .difficulty-hard {/* Red border */
     animation: pulsate 0.5s infinite alternate;
   }
   #game-over-overlay, #start-screen {
