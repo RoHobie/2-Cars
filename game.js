@@ -55,9 +55,9 @@ class Game {
     // Adjusted minimum gap progression for a smoother increase in difficulty
     let minGap;
     if (globalScore >= 70) {
-      minGap = 550; 
-    } else if (globalScore >= 50) {
       minGap = 400; 
+    } else if (globalScore >= 50) {
+      minGap = 300; 
     } else if (globalScore >= 30) {
       minGap = 250; 
     } else {
