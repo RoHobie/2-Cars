@@ -8,14 +8,12 @@
 <link rel="stylesheet" href="entities.css">
 </head>
 <body class="flex justify-center items-center h-screen bg-gray-900 relative flex-col">
-<!-- Custom Starfield Container -->
-
-
 <!-- Game Content -->
 <div class="game-content flex flex-col items-center">
   <!-- Score and Title -->
   <div class="text-white text-lg flex flex-col mb-2">
     <div id="score" class="text-lg">Score: 0</div>
+    <div id="highscore" class="text-lg text-yellow-400">High Score: 0</div>
   </div>
   <!-- Game Canvas -->
   <div id="canvas" class="flex">
@@ -31,7 +29,7 @@
     </div>
   </div>
 </div>
-
+<script src="score-manager.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
