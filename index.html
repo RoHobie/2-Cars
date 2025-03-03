@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2 Car Game</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="entities.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2 Car Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="entities.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
+
 <body class="flex justify-center items-center h-screen bg-gray-900 relative flex-col">
-<!-- Game Content -->
-<div class="game-content flex flex-col items-center">
-  <!-- Score and Title -->
-  <div class="text-white text-lg flex flex-col mb-2">
-    <div id="score" class="text-lg">Score: 0</div>
-    <div id="highscore" class="text-lg text-yellow-400">High Score: 0</div>
+  <div class="text-white text-center text-[40px] font-bold mt-1 mb-6 drop-shadow-[0_0_3px_cyan]" style="font-family: 'Press Start 2P', cursive;">
+    2 Cars
   </div>
-  <!-- Game Canvas -->
-  <div id="canvas" class="flex">
-    <!-- First Game -->
-    <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-      <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-      <div id="car1" class="car left bg-[url('/assets/bluecar.png')] bg-contain bg-no-repeat"></div>
+  <!-- Game Content -->
+  <div class="game-content flex flex-col items-center">
+    <!-- Score and Title -->
+    <div class="text-white flex flex-row items-center space-x-[170px] mb-2"
+      style="font-family: 'Press Start 2P', cursive;">
+
+      <div id="score" class="text-[16px]">Score: 0</div>
+      <div id="highscore" class="text-[16px] text-yellow-400">High Score: 0</div>
     </div>
-    <!-- Second Game -->
-    <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-      <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-      <div id="car2" class="car left bg-[url('/assets/redcar.png')] bg-contain bg-no-repeat"></div>
+    <!-- Game Canvas -->
+    <div id="canvas" class="flex">
+      <!-- First Game -->
+      <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+        <div id="car1" class="car left bg-[url('/assets/bluecar.png')] bg-contain bg-no-repeat"></div>
+      </div>
+      <!-- Second Game -->
+      <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+        <div id="car2" class="car left bg-[url('/assets/redcar.png')] bg-contain bg-no-repeat"></div>
+      </div>
     </div>
   </div>
-</div>
-<script src="score-manager.js"></script>
-<script src="game.js"></script>
+  <script src="score-manager.js"></script>
+  <script src="game.js"></script>
 </body>
+
 </html>
