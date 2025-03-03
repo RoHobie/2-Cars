@@ -84,10 +84,6 @@ function showPlayAgainButton() {
   }
 }
 
-
-
-
-
 function showStartButton() {
   const overlay = document.createElement('div');
   overlay.id = 'start-game-overlay';
