@@ -1,6 +1,6 @@
 
 // Global variables
-let globalScore = 45;
+let globalScore = 0;
 let highScore = 0;
 let gameInstances = [];
 let playAgainVisible = false;
@@ -31,15 +31,6 @@ function updateGlobalScore() {
     highScore = globalScore;
     highScoreElement.innerText = `High Score: ${highScore}`;
     saveHighScore(); // Save to localStorage when high score is beaten
-  }
-  
-  // Add difficulty level indicators at thresholds
-  if (globalScore === 20) {
-    showDifficultyNotification("Level 2! Speed increasing!");
-  } else if (globalScore === 50) {
-    showDifficultyNotification("Level 3! Getting faster!");
-  } else if (globalScore === 70) {
-    showDifficultyNotification("Maximum Difficulty! Good luck!");
   }
 }
 
