@@ -50,77 +50,64 @@ function endAllGames() {
 function showPlayAgainButton() {
   if (!playAgainVisible) {
     playAgainVisible = true;
-    
-    // Create overlay
+
     const overlay = document.createElement('div');
     overlay.id = 'game-over-overlay';
-    overlay.classList.add('absolute', 'inset-0', 'bg-black', 'bg-opacity-75', 'flex', 'flex-col', 'justify-center', 'items-center', 'z-10');
+    overlay.classList.add(
+      'absolute', 'inset-0', 'bg-black', 'bg-opacity-75',
+      'flex', 'flex-col', 'justify-center', 'items-center',
+      'z-10', 'opacity-0', 'transition-opacity', 'duration-500'
+    );
     document.body.appendChild(overlay);
-    
-    // Game over text
-    const gameOverText = document.createElement('h2');
-    
-    gameOverText.textContent = `Game Over! Final Score: ${globalScore}`;
-    gameOverText.classList.add('text-white', 'text-2xl', 'mb-2');
-    overlay.appendChild(gameOverText);
-    
-    // High score display - new
-    const highScoreText = document.createElement('p');
-    
-    // Show special message if a new high score was achieved
-    if (globalScore >= highScore && globalScore > 0) {
-      highScoreText.textContent = `🏆 New High Score: ${highScore} 🏆`;
-      highScoreText.classList.add('text-green-400', 'text-xl', 'mb-4', 'font-bold');
-    } else {
-      highScoreText.textContent = `High Score: ${highScore}`;
-      highScoreText.classList.add('text-white', 'text-xl', 'mb-4');
+
+    setTimeout(() => overlay.classList.remove('opacity-0'), 100); // Fade-in
+
+    // Check if high score was updated (it should already be updated in updateGlobalScore)
+    const savedHighScore = parseInt(localStorage.getItem('carGameHighScore') || "0");
+
+    if (globalScore >= savedHighScore) {  // Show only if the last game set a new high score
+      const highScoreText = document.createElement('h2');
+      highScoreText.textContent = "New High Score!!";
+      highScoreText.classList.add('text-green-200', 'text-3xl', 'mb-4', 'font-bold', 'animate-bounce');
+      overlay.appendChild(highScoreText);
     }
-    
-    overlay.appendChild(highScoreText);
-    
-    // Play Again button
-    const playAgainBtn = document.createElement('button');
-    playAgainBtn.textContent = 'Play Again';
-    playAgainBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
-    playAgainBtn.addEventListener('click', resetGame);
-    overlay.appendChild(playAgainBtn);
+
+    // Play Again Button
+    const playPauseBtn = document.createElement('button');
+    playPauseBtn.id = 'playPauseBtn';
+    playPauseBtn.innerHTML = `<img src="/assets/play.svg" alt="Play" class="w-32 h-32 transition duration-300 hover:brightness-200 hover:drop-shadow-[0_0_5px_cyan]">`;
+    playPauseBtn.addEventListener('click', () => {
+      overlay.classList.add('opacity-0'); // Fade-out effect
+      setTimeout(resetGame, 500);
+    });
+    overlay.appendChild(playPauseBtn);
   }
 }
 
+
+
+
+
 function showStartButton() {
-  // Create overlay for start button
   const overlay = document.createElement('div');
   overlay.id = 'start-game-overlay';
-  overlay.classList.add('absolute', 'inset-0', 'bg-black', 'bg-opacity-75', 'flex', 'flex-col', 'justify-center', 'items-center', 'z-10');
+  overlay.classList.add(
+    'absolute', 'inset-0', 'bg-black', 'bg-opacity-50',
+    'flex', 'flex-col', 'justify-center', 'items-center',
+    'z-10', 'opacity-0', 'transition-opacity', 'duration-500'
+  );
   document.body.appendChild(overlay);
-  
-  // Welcome text
-  const welcomeText = document.createElement('h2');
-  welcomeText.textContent = 'Welcome to the Game!';
-  welcomeText.classList.add('text-white', 'text-2xl', 'mb-4');
-  overlay.appendChild(welcomeText);
-  
-  // High score display - if exists
-  if (highScore > 0) {
-    const highScoreText = document.createElement('p');
-    highScoreText.textContent = `Your High Score: ${highScore}`;
-    highScoreText.classList.add('text-yellow-400', 'text-xl', 'mb-4');
-    overlay.appendChild(highScoreText);
-  }
-  
-  // Instructions
-  const instructions = document.createElement('p');
-  instructions.textContent = 'Use "A" key to move left car, "D" key to move right car. Collect yellow orbs, avoid blue obstacles!';
-  instructions.classList.add('text-white', 'text-lg', 'mb-6', 'max-w-md', 'text-center');
-  overlay.appendChild(instructions);
-  
-  // Start button
-  const startBtn = document.createElement('button');
-  startBtn.textContent = 'Start Game';
-  startBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'font-bold', 'py-3', 'px-6', 'rounded-lg', 'text-xl');
-  startBtn.addEventListener('click', startGameFlow);
-  overlay.appendChild(startBtn);
+
+  setTimeout(() => overlay.classList.remove('opacity-0'), 100); // Fade-in
+
+  // Play/Pause Button
+  const playPauseBtn = document.createElement('button');
+  playPauseBtn.id = 'playPauseBtn';
+  playPauseBtn.innerHTML = `<img src="/assets/play.svg" alt="Play" class="w-32 h-32 transition duration-300 hover:brightness-200 hover:drop-shadow-[0_0_5px_cyan]">`;
+  playPauseBtn.addEventListener('click', startGameFlow);
+  overlay.appendChild(playPauseBtn);
 }
+
 
 function startGameFlow() {
   // Remove start overlay
