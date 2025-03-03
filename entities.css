@@ -36,7 +36,7 @@
   }
   
   /* Difficulty indicators */
-  .difficulty-hard {/* Red border */
+  .collision{/* Red border */
     animation: pulsate 0.5s infinite alternate;
   }
   #game-over-overlay, #start-screen {
