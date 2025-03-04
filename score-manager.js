@@ -47,42 +47,68 @@ function endAllGames() {
   showPlayAgainButton();
 }
 
-function showPlayAgainButton() {
+function showPlayAgainButton(gameOverReason = 'crash') {
   if (!playAgainVisible) {
-    playAgainVisible = true;
-
-    const overlay = document.createElement('div');
-    overlay.id = 'game-over-overlay';
-    overlay.classList.add(
-      'absolute', 'inset-0', 'bg-black', 'bg-opacity-75',
-      'flex', 'flex-col', 'justify-center', 'items-center',
-      'z-10', 'opacity-0', 'transition-opacity', 'duration-500'
-    );
-    document.body.appendChild(overlay);
-
-    setTimeout(() => overlay.classList.remove('opacity-0'), 100); // Fade-in
-
-    // Check if high score was updated (it should already be updated in updateGlobalScore)
-    const savedHighScore = parseInt(localStorage.getItem('carGameHighScore') || "0");
-
-    if (globalScore >= savedHighScore) {  // Show only if the last game set a new high score
-      const highScoreText = document.createElement('h2');
-      highScoreText.textContent = "New High Score!!";
-      highScoreText.classList.add('text-green-200', 'text-3xl', 'mb-4', 'font-bold', 'animate-bounce');
-      overlay.appendChild(highScoreText);
-    }
-
-    // Play Again Button
-    const playPauseBtn = document.createElement('button');
-    playPauseBtn.id = 'playPauseBtn';
-    playPauseBtn.innerHTML = `<img src="/assets/play.svg" alt="Play" class="w-32 h-32 transition duration-300 hover:brightness-200 hover:drop-shadow-[0_0_5px_cyan]">`;
-    playPauseBtn.addEventListener('click', () => {
-      overlay.classList.add('opacity-0'); // Fade-out effect
-      setTimeout(resetGame, 500);
-    });
-    overlay.appendChild(playPauseBtn);
+     playAgainVisible = true;
+     const overlay = document.createElement('div');
+     overlay.id = 'game-over-overlay';
+     overlay.classList.add(
+         'absolute', 'inset-0', 'bg-black', 'bg-opacity-75',
+         'flex', 'flex-col', 'justify-center', 'items-center',
+         'z-10', 'opacity-0', 'transition-opacity', 'duration-500'
+     );
+ 
+     // Custom messages based on game over reason
+     const messages = {
+         'crash': {
+             text: "Oops! You Crashed!",
+             textClass: 'text-red-300 text-3xl mb-4 font-bold drop-shadow-[0_0_3px_red]'
+         },
+         'missed': {
+             text: "Points Slipped Away!",
+             textClass: 'text-yellow-300 text-3xl mb-4 font-bold drop-shadow-[0_0_3px_yellow]'
+         },
+         'default': {
+             text: "Game Over!",
+             textClass: 'text-cyan-200 text-3xl mb-4 font-bold drop-shadow-[0_0_3px_cyan]'
+         }
+     };
+ 
+     // Select message based on game over reason
+     const messageConfig = messages[gameOverReason] || messages['default'];
+     const gameOverText = document.createElement('h2');
+     gameOverText.textContent = messageConfig.text;
+     gameOverText.classList.add(...messageConfig.textClass.split(' '));
+     overlay.appendChild(gameOverText);
+ 
+     // High Score Check
+     const savedHighScore = parseInt(localStorage.getItem('carGameHighScore') || "0");
+     if (globalScore >= savedHighScore) {
+         const highScoreText = document.createElement('h2');
+         highScoreText.textContent = "New High Score!!";
+         highScoreText.classList.add('text-green-200', 'text-2xl', 'mb-4', 'font-bold', 'animate-bounce');
+         overlay.appendChild(highScoreText);
+     }
+ 
+     // Play Again Button
+     const playPauseBtn = document.createElement('button');
+     playPauseBtn.id = 'playPauseBtn';
+     playPauseBtn.innerHTML = `<img src="/assets/play.svg" alt="Play" class="w-32 h-32 transition duration-300 hover:brightness-200 hover:drop-shadow-[0_0_5px_cyan]">`;
+     playPauseBtn.addEventListener('click', () => {
+         overlay.classList.add('opacity-0'); // Fade-out effect
+         setTimeout(() => {
+             document.body.removeChild(overlay);
+             resetGame();
+             playAgainVisible = false; // Reset so it can appear again next time
+         }, 500);
+     });
+     overlay.appendChild(playPauseBtn);
+ 
+     document.body.appendChild(overlay);
+     // Fade-in after appending
+     setTimeout(() => overlay.classList.remove('opacity-0'), 100);
   }
-}
+ }
 
 function showStartButton() {
   const overlay = document.createElement('div');
