@@ -1,41 +1,57 @@
 .car {
-    width: 51px;
-    height: 90px;
-    position: absolute;
-    bottom: 80px;
-    transition: left 0.2s;
-  }
+  width: 51px;
+  height: 90px;
+  position: absolute;
+  bottom: 80px;
+  transition: left 0.2s;
+}
 
-  .left {
-    left: 39px;
-  }
-  .right {
-    left: 169px;
-  }
-  .obstacle {
-    width: 38px;
-    height: 38px;
-    position: absolute;
-    top: -60px;
-    border: 6px solid white; /* Thick white border */
-    border-radius: 8px;      /* Slight curve on the white border */
-    box-sizing: border-box; /* Include border in width/height calculation */
-    outline: 3px solid #007bff; /* Example blue outline - change as needed */
-    outline-offset: 0px;   /* Makes the outline appear outside the element */
-  }
-  .point {
-    width: 38px;
-    height: 38px;
-    position: absolute;
-    top: -60px;
-    border: 6px solid white; /* Thick white border */
-    border-radius: 8px;      /* Slight curve on the white border */
-    box-sizing: border-box; /* Include border in width/height calculation */
-    outline: 3px solid #e70f00; /* Example blue outline - change as needed */
-    outline-offset: 0px;
-  }
+.left {
+  left: 39px;
+}
 
-    
+.right {
+  left: 169px;
+}
 
+.obstacle {
+  width: 38px;
+  height: 38px;
+  position: absolute;
+  top: -60px;
+  border: 6px solid white;
+  border-radius: 8px;
+  box-sizing: border-box;
+  outline: 3px solid #007bff;
+  outline-offset: 0px;
+  transition: opacity 0.3s ease;
+}
 
- 
+.obstacle-crash {
+  animation: blink-obstacle 0.5s infinite;
+}
+
+@keyframes blink-obstacle {
+  0%, 100% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0.2;
+  }
+}
+
+.point {
+  width: 38px;
+  height: 38px;
+  position: absolute;
+  top: -60px;
+  border: 6px solid white;
+  /* Thick white border */
+  border-radius: 8px;
+  /* Slight curve on the white border */
+  box-sizing: border-box;
+  /* Include border in width/height calculation */
+  outline: 3px solid #e70f00;
+  /* Example blue outline - change as needed */
+  outline-offset: 0px;
+}
