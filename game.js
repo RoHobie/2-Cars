@@ -1,3 +1,4 @@
+
 class Game {
   constructor(gameId, carId) {
     this.gameContainer = document.getElementById(gameId);
@@ -7,9 +8,14 @@ class Game {
     this.carId = carId;
     this.baseSpeed = 4; // Initial slower speed
     this.currentSpeed = this.baseSpeed;
+    this.pointSound = new Audio('assets/point-sound.mp3');
+    this.crashSound = new Audio('assets/loss-sound.mp3'); // Preload sound
+    this.pointSound.preload = 'auto';
+    this.crashSound.preload = 'auto';
+    this.pointSound.volume = 0.4;
+    this.crashSound.volume = 0.4; // Adjust volume
     // We don't auto-start the game anymore
   }
-
   startGame() {
     this.spawnObject();
   }
@@ -52,16 +58,16 @@ class Game {
       this.createPoint();
     }
 
-    // Adjusted minimum gap progression for a smoother increase in difficulty
+    //minimum gap progression for a smoother increase in difficulty
     let minGap;
     if (globalScore >= 70) {
-      minGap = 400;
+      minGap = 500;
     } else if (globalScore >= 50) {
       minGap = 300;
     } else if (globalScore >= 30) {
       minGap = 250;
     } else {
-      minGap = 200; // Base case, slightly reduced
+      minGap = 200; // Base case
     }
 
     // Adjusted spawn delay formula for a smoother difficulty curve
@@ -97,72 +103,89 @@ class Game {
     let lastTime = 0;
 
     const move = (currentTime) => {
-      if (this.gameOverFlag) return;
+        if (this.gameOverFlag) return;
 
-      // Calculate delta time (time since last frame)
-      if (lastTime === 0) {
-        lastTime = currentTime;
-        requestAnimationFrame(move);
-        return;
-      }
-
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-
-      // Add a speed multiplier to control overall speed (0.5 = half speed)
-      const speedMultiplier = 0.5;
-
-      // Use 144fps normalization (6.94ms) with the speed multiplier
-      position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
-      entity.style.top = position + 'px';
-
-      if (type === 'obstacle' && this.checkCollision(entity)) {
-        endAllGames();
-        return;
-      }
-      if (type === 'point' && this.checkPointCollection(entity)) {
-        return;
-      }
-      if (position < 760) {
-        requestAnimationFrame(move);
-      } else {
-        if (type === 'point') {
-          endAllGames();
+        // Calculate delta time (time since last frame)
+        if (lastTime === 0) {
+            lastTime = currentTime;
+            requestAnimationFrame(move);
+            return;
         }
-        entity.remove();
-      }
+
+        const deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        // Add a speed multiplier to control overall speed (0.5 = half speed)
+        const speedMultiplier = 0.5;
+
+        // Use 144fps normalization (6.94ms) with the speed multiplier
+        position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
+        entity.style.top = position + 'px';
+
+        if (type === 'obstacle' && this.checkCollision(entity)) {
+            endAllGames();
+            return;
+        }
+        if (type === 'point' && this.checkPointCollection(entity)) {
+            return;
+        }
+        if (position < 760) {
+            requestAnimationFrame(move);
+        } else {
+            if (type === 'point') {
+                showPlayAgainButton('missed');
+                endAllGames();
+            }
+            entity.remove();
+        }
     };
 
     // Start the animation loop with timestamp
     requestAnimationFrame(move);
-  }
-  checkCollision(entity) {
-    return this.detectCollision(entity, this.car);
-  }
+}
 
-  checkPointCollection(entity) {
-    if (this.detectCollision(entity, this.car)) {
-      entity.remove();
-      updateGlobalScore();
+
+checkCollision(entity) {
+  // If collision detected, store the collided obstacle for blinking
+  if (this.detectCollision(entity, this.car)) {
+      entity.classList.add('obstacle-crash');
       return true;
-    }
-    return false;
   }
+  return false;
+}
 
-  detectCollision(entity1, entity2) {
-    const rect1 = entity1.getBoundingClientRect();
-    const rect2 = entity2.getBoundingClientRect();
-    return (
-      rect1.left < rect2.right &&
-      rect1.right > rect2.left &&
-      rect1.top < rect2.bottom &&
-      rect1.bottom > rect2.top
-    );
-  }
+checkPointCollection(entity) {
+  if (this.detectCollision(entity, this.car)) {
+    this.pointSound.currentTime = 0; // Reset sound to start
+    this.pointSound.play(); // Play sound
 
-  gameOver() {
-    this.gameOverFlag = true;
+    entity.remove();
+    updateGlobalScore();
+    return true;
   }
+  return false;
+}
+
+detectCollision(entity1, entity2) {
+  const rect1 = entity1.getBoundingClientRect();
+  const rect2 = entity2.getBoundingClientRect();
+  
+  // Reduce collision area slightly to prevent complete overlap
+  const padding = 5; // Adjust this value to fine-tune collision detection
+  return (
+      rect1.left + padding < rect2.right &&
+      rect1.right - padding > rect2.left &&
+      rect1.top + padding < rect2.bottom &&
+      rect1.bottom - padding > rect2.top
+  );
+}
+
+gameOver() {
+  this.gameOverFlag = true;
+  this.crashSound.currentTime = 0; // Reset and play thud sound
+  this.crashSound.play();
+}
+
 
   reset() {
     this.gameOverFlag = false;
