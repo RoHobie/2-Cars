@@ -92,58 +92,83 @@ class Game {
   createEntity(type, className) {
     const entity = document.createElement('div');
     entity.classList.add(type, ...className.split(' '));
-    entity.style.left = Math.random() < 0.5 ? '45px' : '175px';
+    
+    // Get the width of the game container
+    const containerWidth = this.gameContainer.clientWidth;
+    
+    // Calculate lane centers (25% and 75% of container width)
+    const leftLaneCenter = containerWidth * 0.25;
+    const rightLaneCenter = containerWidth * 0.75;
+    
+    // Calculate entity width based on responsive CSS
+    const entityWidth = type === 'obstacle' || type === 'point' ? 
+                        Math.min(Math.max(containerWidth * 0.07, 20), 38) : 30;
+    
+    // Randomly choose left or right lane
+    const lane = Math.random() < 0.5 ? 'left' : 'right';
+    const laneCenter = lane === 'left' ? leftLaneCenter : rightLaneCenter;
+    
+    // Position entity in the center of the chosen lane
+    entity.style.left = `${laneCenter - (entityWidth / 2)}px`;
     entity.style.top = '-60px';
+    
     this.gameContainer.appendChild(entity);
     this.animateEntity(entity, type);
   }
 
-  animateEntity(entity, type) {
-    let position = -60;
-    let lastTime = 0;
-
-    const move = (currentTime) => {
-        if (this.gameOverFlag) return;
-
-        // Calculate delta time (time since last frame)
-        if (lastTime === 0) {
-            lastTime = currentTime;
-            requestAnimationFrame(move);
-            return;
-        }
-
-        const deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-        // Add a speed multiplier to control overall speed (0.5 = half speed)
-        const speedMultiplier = 0.5;
-
-        // Use 144fps normalization (6.94ms) with the speed multiplier
-        position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
-        entity.style.top = position + 'px';
-
-        if (type === 'obstacle' && this.checkCollision(entity)) {
-            endAllGames();
-            return;
-        }
-        if (type === 'point' && this.checkPointCollection(entity)) {
-            return;
-        }
-        if (position < 760) {
-            requestAnimationFrame(move);
-        } else {
-            if (type === 'point') {
-                showPlayAgainButton('missed');
-                endAllGames();
-            }
-            entity.remove();
-        }
-    };
-
-    // Start the animation loop with timestamp
-    requestAnimationFrame(move);
+animateEntity(entity, type) {
+  let position = -60;
+  let lastTime = 0;
+  const gameContainer = entity.parentElement;
+  const gameHeight = gameContainer.clientHeight;
+  
+  const move = (currentTime) => {
+    if (this.gameOverFlag) return;
+    
+    // Calculate delta time (time since last frame)
+    if (lastTime === 0) {
+      lastTime = currentTime;
+      requestAnimationFrame(move);
+      return;
+    }
+    
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    // Add a speed multiplier to control overall speed (0.5 = half speed)
+    const speedMultiplier = 0.5;
+    
+    // Use 144fps normalization (6.94ms) with the speed multiplier
+    position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
+    entity.style.top = position + 'px';
+    
+    // Check for collision or point collection
+    if (type === 'obstacle' && this.checkCollision(entity)) {
+      entity.classList.add('obstacle-crash');
+      endAllGames();
+      return;
+    }
+    
+    if (type === 'point' && this.checkPointCollection(entity)) {
+      entity.remove();
+      return;
+    }
+    
+    // Remove entity when it goes off screen
+    if (position < gameHeight) {
+      requestAnimationFrame(move);
+    } else {
+      if (type === 'point') {
+        showPlayAgainButton('missed');
+        endAllGames();
+      }
+      entity.remove();
+    }
+  };
+  
+  // Start the animation loop with timestamp
+  requestAnimationFrame(move);
 }
-
 
 checkCollision(entity) {
   // If collision detected, store the collided obstacle for blinking
