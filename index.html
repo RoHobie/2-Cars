@@ -1,90 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2 Car Game</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="entities.css">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="entities.css">
 </head>
-
 <body class="flex justify-center items-center h-screen bg-gray-900 flex-col relative">
+  <div class="text-white text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 md:mb-6 drop-shadow-[0_0_3px_cyan]"
+    style="font-family: 'Press Start 2P', cursive;">
+    2 Cars
+  </div>
   
-    <div class="text-white text-center text-[24px] sm:text-[40px] font-bold mb-4 sm:mb-6 drop-shadow-[0_0_3px_cyan]"
+  <button id="muteButton"
+    class="absolute top-2 sm:top-4 right-2 sm:right-4 bg-gray-800 text-white px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded text-xs sm:text-sm md:text-base">
+    🔊 Mute
+  </button>
+  
+  <div class="game-content flex flex-col items-center w-full max-w-6xl px-2">
+    <div class="text-white flex flex-row items-center justify-between w-full max-w-xl mb-2"
       style="font-family: 'Press Start 2P', cursive;">
-      2 Cars
+      <div id="score" class="text-xs sm:text-sm md:text-base">Score: 0</div>
+      <div id="highscore" class="text-xs sm:text-sm md:text-base text-yellow-400">High Score: 0</div>
     </div>
-    <button id="muteButton"
-      class="absolute top-4 right-4 bg-gray-800 text-white px-2 sm:px-4 py-1 sm:py-2 rounded text-sm sm:text-base">
-      🔊 Mute
-    </button>
-  
-    <div class="game-content flex flex-col items-center max-w-[90vw]">
-      <div class="text-white flex flex-row items-center space-x-[50px] sm:space-x-[170px] mb-2"
-        style="font-family: 'Press Start 2P', cursive;">
-        <div id="score" class="text-[12px] sm:text-[16px]">Score: 0</div>
-        <div id="highscore" class="text-[12px] sm:text-[16px] text-yellow-400">High Score: 0</div>
-      </div>
-  
-      <div id="canvas" class="flex space-x-2 sm:space-x-4">
-        <div id="game1"
-          class="relative w-[140px] sm:w-[260px] h-[420px] sm:h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-          <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-          <div id="car1" class="car left  bg-contain bg-no-repeat">
-            <img src="/assets/bluecar.png" alt="car" class="absolute bottom-0 left-0 w-full h-full" />
-          </div>
+    
+    <div id="canvas" class="flex space-x-2 sm:space-x-4 w-full justify-center">
+      <div id="game1"
+        class="relative w-full max-w-xs h-80 sm:h-96 md:h-120 lg:h-140 overflow-hidden border-2 border-white bg-gray-900">
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+        <div id="car1" class="car left bg-contain bg-no-repeat">
+          <img src="/assets/bluecar.png" alt="car" class="absolute bottom-0 left-0 w-full h-full" />
         </div>
-  
-        <div id="game2"
-          class="relative w-[140px] sm:w-[260px] h-[420px] sm:h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-          <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-          <div id="car2" class="car left  bg-contain bg-no-repeat">
-            <img src="/assets/redcar.png" alt="car" class="absolute bottom-0 left-0 w-full h-full" />
-          </div>
+      </div>
+      
+      <div id="game2"
+        class="relative w-full max-w-xs h-80 sm:h-96 md:h-120 lg:h-140 overflow-hidden border-2 border-white bg-gray-900">
+        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+        <div id="car2" class="car left bg-contain bg-no-repeat">
+          <img src="/assets/redcar.png" alt="car" class="absolute bottom-0 left-0 w-full h-full" />
         </div>
       </div>
     </div>
-  
+  </div>
   
   <script src="score-manager.js"></script>
   <script src="game.js"></script>
-  <script>
-    const bgMusic = document.getElementById('bgMusic');
-const muteButton = document.getElementById('muteButton');
-
-// Set initial volume
-bgMusic.volume = 0.5;
-
-let musicStarted = false;
-
-// Function to play background music
-function startMusic() {
-  if (!musicStarted) {
-    bgMusic.play().then(() => {
-      musicStarted = true;
-    }).catch(error => console.log("Autoplay blocked:", error));
-  }
-}
-
-// Play music when the user clicks the mute button for the first time
-muteButton.addEventListener('click', () => {
-  startMusic();
-  
-  if (bgMusic.muted) {
-    bgMusic.muted = false;
-    muteButton.textContent = '🔊 Mute';
-  } else {
-    bgMusic.muted = true;
-    muteButton.textContent = '🔇 Unmute';
-  }
-});
-
-// Optional: Start music when user clicks anywhere on the page
-document.body.addEventListener('click', startMusic, { once: true });
-
-  </script>
 </body>
-
 </html>
