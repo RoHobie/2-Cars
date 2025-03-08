@@ -183,18 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-  document.addEventListener('click', (event) => {
-    if (!playAgainVisible && start) { // Only process keystrokes if game is active and started
-      if (event.key === 'a' || event.key === 'ArrowLeft') {
-        document.getElementById('car1').classList.toggle('left');
-        document.getElementById('car1').classList.toggle('right');
-      }
-      if (event.key === 'd' || event.key === 'ArrowRight') {
-        document.getElementById('car2').classList.toggle('left');
-        document.getElementById('car2').classList.toggle('right');
-      }
-    }
-  });
+  
 });
   // Handle car movement
 
