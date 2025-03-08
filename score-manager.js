@@ -197,3 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
   // Handle car movement
+
+game1 = document.querySelector('#game1');
+game2 = document.querySelector('#game2');
+
+game1.addEventListener("click", () => {
+  document.getElementById('car1').classList.toggle('left');
+  document.getElementById('car1').classList.toggle('right');
+})
+game2.addEventListener("click", () => {
+  document.getElementById('car2').classList.toggle('left');
+  document.getElementById('car2').classList.toggle('right');
+})
