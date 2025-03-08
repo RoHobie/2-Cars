@@ -10,35 +10,77 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
-<body class="flex justify-center items-center h-screen bg-gray-900 relative flex-col">
-  <div class="text-white text-center text-[40px] font-bold mb-6 drop-shadow-[0_0_3px_cyan]" style="font-family: 'Press Start 2P', cursive;">
-    2 Cars
-  </div>
-  <!-- Game Content -->
-  <div class="game-content flex flex-col items-center">
-    <!-- Score and Title -->
-    <div class="text-white flex flex-row items-center space-x-[170px] mb-2"
+<body class="flex justify-center items-center h-screen bg-gray-900 flex-col relative">
+  
+    <div class="text-white text-center text-[24px] sm:text-[40px] font-bold mb-4 sm:mb-6 drop-shadow-[0_0_3px_cyan]"
       style="font-family: 'Press Start 2P', cursive;">
-
-      <div id="score" class="text-[16px]">Score: 0</div>
-      <div id="highscore" class="text-[16px] text-yellow-400">High Score: 0</div>
+      2 Cars
     </div>
-    <!-- Game Canvas -->
-    <div id="canvas" class="flex">
-      <!-- First Game -->
-      <div id="game1" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-        <div id="car1" class="car left bg-[url('/assets/bluecar.png')] bg-contain bg-no-repeat"></div>
+    <button id="muteButton"
+      class="absolute top-4 right-4 bg-gray-800 text-white px-2 sm:px-4 py-1 sm:py-2 rounded text-sm sm:text-base">
+      🔊 Mute
+    </button>
+  
+    <div class="game-content flex flex-col items-center max-w-[90vw]">
+      <div class="text-white flex flex-row items-center space-x-[50px] sm:space-x-[170px] mb-2"
+        style="font-family: 'Press Start 2P', cursive;">
+        <div id="score" class="text-[12px] sm:text-[16px]">Score: 0</div>
+        <div id="highscore" class="text-[12px] sm:text-[16px] text-yellow-400">High Score: 0</div>
       </div>
-      <!-- Second Game -->
-      <div id="game2" class="relative w-[260px] h-[760px] overflow-hidden border-2 border-white bg-gray-900">
-        <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
-        <div id="car2" class="car left bg-[url('/assets/redcar.png')] bg-contain bg-no-repeat"></div>
+  
+      <div id="canvas" class="flex space-x-2 sm:space-x-4">
+        <div id="game1"
+          class="relative w-[140px] sm:w-[260px] h-[420px] sm:h-[760px] overflow-hidden border-2 border-white bg-gray-900">
+          <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+          <div id="car1" class="car left bg-[url('/assets/bluecar.png')] bg-contain bg-no-repeat"></div>
+        </div>
+  
+        <div id="game2"
+          class="relative w-[140px] sm:w-[260px] h-[420px] sm:h-[760px] overflow-hidden border-2 border-white bg-gray-900">
+          <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
+          <div id="car2" class="car left bg-[url('/assets/redcar.png')] bg-contain bg-no-repeat"></div>
+        </div>
       </div>
     </div>
-  </div>
+  
+  
   <script src="score-manager.js"></script>
   <script src="game.js"></script>
+  <script>
+    const bgMusic = document.getElementById('bgMusic');
+const muteButton = document.getElementById('muteButton');
+
+// Set initial volume
+bgMusic.volume = 0.5;
+
+let musicStarted = false;
+
+// Function to play background music
+function startMusic() {
+  if (!musicStarted) {
+    bgMusic.play().then(() => {
+      musicStarted = true;
+    }).catch(error => console.log("Autoplay blocked:", error));
+  }
+}
+
+// Play music when the user clicks the mute button for the first time
+muteButton.addEventListener('click', () => {
+  startMusic();
+  
+  if (bgMusic.muted) {
+    bgMusic.muted = false;
+    muteButton.textContent = '🔊 Mute';
+  } else {
+    bgMusic.muted = true;
+    muteButton.textContent = '🔇 Unmute';
+  }
+});
+
+// Optional: Start music when user clicks anywhere on the page
+document.body.addEventListener('click', startMusic, { once: true });
+
+  </script>
 </body>
 
 </html>
