@@ -1,17 +1,17 @@
 .car {
-  width: clamp(30px, 10%, 50px);
-  height: clamp(50px, 15%, 90px);
+  width: 30px;
+  height: 50px;
   position: absolute;
-  bottom: clamp(30px, 10%, 80px);
+  bottom: 30px;
   transition: left 0.2s;
 }
 
 .left {
-  left: calc(25% - clamp(15px, 5%, 25px));
+  left: calc(25% - (30px / 2));
 }
 
 .right {
-  left: calc(75% - clamp(15px, 5%, 25px));
+  left: calc(75% - (30px / 2));
 }
 
 .game-container {
@@ -30,14 +30,14 @@
 }
 
 .obstacle {
-  width: clamp(20px, 7%, 38px);
-  height: clamp(20px, 7%, 38px);
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: -60px;
-  border: clamp(3px, 1vw, 6px) solid white;
+  border: 3px solid white;
   border-radius: 8px;
   box-sizing: border-box;
-  outline: clamp(2px, 0.5vw, 3px) solid #007bff;
+  outline: 2px solid #007bff;
   outline-offset: 0px;
   transition: opacity 0.3s ease;
 }
@@ -56,27 +56,38 @@
 }
 
 .point {
-  width: clamp(20px, 7%, 38px);
-  height: clamp(20px, 7%, 38px);
+  width: 20px;
+  height: 20px;
   position: absolute;
   top: -60px;
-  border: clamp(3px, 1vw, 6px) solid white;
+  border: 3px solid white;
   border-radius: 8px;
   box-sizing: border-box;
-  outline: clamp(2px, 0.5vw, 3px) solid #e70f00;
+  outline: 2px solid #e70f00;
   outline-offset: 0px;
 }
 
-/* Additional responsive helpers */
-@media (max-width: 640px) {
+/* Responsive styles */
+@media (min-width: 640px) and (max-width: 1023px) {
   .car {
-    width: 30px;
-    height: 50px;
+    width: 40px;
+    height: 70px;
+    bottom: 55px;
+  }
+  
+  .left {
+    left: calc(25% - (40px / 2));
+  }
+  
+  .right {
+    left: calc(75% - (40px / 2));
   }
   
   .obstacle, .point {
-    width: 24px;
-    height: 24px;
+    width: 29px;
+    height: 29px;
+    border-width: 4px;
+    outline-width: 2.5px;
   }
 }
 
@@ -84,10 +95,21 @@
   .car {
     width: 50px;
     height: 90px;
+    bottom: 80px;
+  }
+  
+  .left {
+    left: calc(25% - (50px / 2));
+  }
+  
+  .right {
+    left: calc(75% - (50px / 2));
   }
   
   .obstacle, .point {
     width: 38px;
     height: 38px;
+    border-width: 6px;
+    outline-width: 3px;
   }
 }
