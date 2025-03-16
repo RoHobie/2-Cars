@@ -100,9 +100,9 @@ class Game {
     const leftLaneCenter = containerWidth * 0.25;
     const rightLaneCenter = containerWidth * 0.75;
     
-    // Calculate entity width based on responsive CSS
-    const entityWidth = type === 'obstacle' || type === 'point' ? 
-                        Math.min(Math.max(containerWidth * 0.07, 20), 38) : 30;
+    // Get the actual computed width of the entity after it's added to the DOM
+    this.gameContainer.appendChild(entity);
+    const entityWidth = entity.offsetWidth;
     
     // Randomly choose left or right lane
     const lane = Math.random() < 0.5 ? 'left' : 'right';
@@ -112,104 +112,103 @@ class Game {
     entity.style.left = `${laneCenter - (entityWidth / 2)}px`;
     entity.style.top = '-60px';
     
-    this.gameContainer.appendChild(entity);
     this.animateEntity(entity, type);
   }
 
-animateEntity(entity, type) {
-  let position = -60;
-  let lastTime = 0;
-  const gameContainer = entity.parentElement;
-  const gameHeight = gameContainer.clientHeight;
-  
-  const move = (currentTime) => {
-    if (this.gameOverFlag) return;
-    
-    // Calculate delta time (time since last frame)
-    if (lastTime === 0) {
-      lastTime = currentTime;
-      requestAnimationFrame(move);
-      return;
-    }
-    
-    const deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
-    
-    // Add a speed multiplier to control overall speed (0.5 = half speed)
-    const speedMultiplier = 0.5;
-    
-    // Use 144fps normalization (6.94ms) with the speed multiplier
-    position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
-    entity.style.top = position + 'px';
-    
-    // Check for collision or point collection
-    if (type === 'obstacle' && this.checkCollision(entity)) {
-      entity.classList.add('obstacle-crash');
-      endAllGames();
-      return;
-    }
-    
-    if (type === 'point' && this.checkPointCollection(entity)) {
-      entity.remove();
-      return;
-    }
-    
-    // Remove entity when it goes off screen
-    if (position < gameHeight) {
-      requestAnimationFrame(move);
-    } else {
-      if (type === 'point') {
-        showPlayAgainButton('missed');
-        endAllGames();
-      }
-      entity.remove();
-    }
-  };
-  
-  // Start the animation loop with timestamp
-  requestAnimationFrame(move);
-}
+  animateEntity(entity, type) {
+    let position = -60;
+    let lastTime = 0;
+    const gameContainer = entity.parentElement;
+    const gameHeight = gameContainer.clientHeight;
 
-checkCollision(entity) {
-  // If collision detected, store the collided obstacle for blinking
-  if (this.detectCollision(entity, this.car)) {
+    const move = (currentTime) => {
+      if (this.gameOverFlag) return;
+
+      // Calculate delta time (time since last frame)
+      if (lastTime === 0) {
+        lastTime = currentTime;
+        requestAnimationFrame(move);
+        return;
+      }
+
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+
+      // Add a speed multiplier to control overall speed (0.5 = half speed)
+      const speedMultiplier = 0.5;
+
+      // Use 144fps normalization (6.94ms) with the speed multiplier
+      position += this.currentSpeed * speedMultiplier * (deltaTime / 6.94);
+      entity.style.top = position + 'px';
+
+      // Check for collision or point collection
+      if (type === 'obstacle' && this.checkCollision(entity)) {
+        entity.classList.add('obstacle-crash');
+        endAllGames();
+        return;
+      }
+
+      if (type === 'point' && this.checkPointCollection(entity)) {
+        entity.remove();
+        return;
+      }
+
+      // Remove entity when it goes off screen
+      if (position < gameHeight) {
+        requestAnimationFrame(move);
+      } else {
+        if (type === 'point') {
+          showPlayAgainButton('missed');
+          endAllGames();
+        }
+        entity.remove();
+      }
+    };
+
+    // Start the animation loop with timestamp
+    requestAnimationFrame(move);
+  }
+
+  checkCollision(entity) {
+    // If collision detected, store the collided obstacle for blinking
+    if (this.detectCollision(entity, this.car)) {
       entity.classList.add('obstacle-crash');
       return true;
+    }
+    return false;
   }
-  return false;
-}
 
-checkPointCollection(entity) {
-  if (this.detectCollision(entity, this.car)) {
-    this.pointSound.currentTime = 0; // Reset sound to start
-    this.pointSound.play(); // Play sound
+  checkPointCollection(entity) {
+    if (this.detectCollision(entity, this.car)) {
+      this.pointSound.currentTime = 0; // Reset sound to start
+      this.pointSound.play(); // Play sound
 
-    entity.remove();
-    updateGlobalScore();
-    return true;
+      entity.remove();
+      updateGlobalScore();
+      return true;
+    }
+    return false;
   }
-  return false;
-}
 
-detectCollision(entity1, entity2) {
-  const rect1 = entity1.getBoundingClientRect();
-  const rect2 = entity2.getBoundingClientRect();
-  
-  // Reduce collision area slightly to prevent complete overlap
-  const padding = 5; // Adjust this value to fine-tune collision detection
-  return (
+  detectCollision(entity1, entity2) {
+    const rect1 = entity1.getBoundingClientRect();
+    const rect2 = entity2.getBoundingClientRect();
+
+    // Reduce collision area slightly to prevent complete overlap
+    const padding = 5; // Adjust this value to fine-tune collision detection
+    return (
       rect1.left + padding < rect2.right &&
       rect1.right - padding > rect2.left &&
       rect1.top + padding < rect2.bottom &&
       rect1.bottom - padding > rect2.top
-  );
-}
+    );
+  }
 
-gameOver() {
-  this.gameOverFlag = true;
-  this.crashSound.currentTime = 0; // Reset and play thud sound
-  this.crashSound.play();
-}
+  gameOver() {
+    this.gameOverFlag = true;
+    this.crashSound.currentTime = 0; // Reset and play thud sound
+    this.crashSound.play();
+  }
 
 
   reset() {
