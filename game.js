@@ -16,6 +16,7 @@ class Game {
     this.crashSound.volume = 0.4; // Adjust volume
     // We don't auto-start the game anymore
   }
+  
   startGame() {
     this.spawnObject();
   }
@@ -227,3 +228,60 @@ class Game {
     this.startGame();
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  // Get all sound toggle buttons (there are two in your layout)
+  const soundButtons = document.querySelectorAll('img[alt="mute"]');
+  
+  // Track mute state
+  let isMuted = false;
+  
+  // Function to update all game sounds based on mute state
+  function updateSoundVolumes() {
+    // Get all game instances
+    const allGameInstances = gameInstances || [];
+    
+    // Update volume for all game instances
+    allGameInstances.forEach(game => {
+      if (game.pointSound) {
+        game.pointSound.volume = isMuted ? 0 : 0.4; // Original volume was 0.4
+      }
+      if (game.crashSound) {
+        game.crashSound.volume = isMuted ? 0 : 0.4; // Original volume was 0.4
+      }
+    });
+    
+    // If any other sounds exist in the game, you can add them here
+  }
+  
+  // Set up click handlers for sound buttons
+  soundButtons.forEach(button => {
+    // Add pointer cursor style
+    button.style.cursor = 'pointer';
+    
+    // Add click handler
+    button.addEventListener('click', function() {
+      // Toggle mute state
+      isMuted = !isMuted;
+      
+      // Update button appearance based on mute state
+      if (isMuted) {
+        // Set to red when muted
+        this.style.filter = 'brightness(1) sepia(1) saturate(10) hue-rotate(320deg)';
+      } else {
+        // Set to grey when unmuted
+        this.style.filter = 'grayscale(1) opacity(0.6)';
+      }
+      
+      // Update all sound volumes
+      updateSoundVolumes();
+    });
+    
+    // Set initial state (grey)
+    button.style.filter = 'grayscale(1) opacity(0.6)';
+  });
+  
+  // Public method to check if sound is muted
+  window.isSoundMuted = function() {
+    return isMuted;
+  };
+});
