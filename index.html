@@ -10,24 +10,21 @@
   <link rel="stylesheet" href="entities.css">
 </head>
 
-<div class="text-white text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 md:mb-6 drop-shadow-[0_0_3px_cyan]"
-  style="font-family: 'Press Start 2P', cursive;">
-  2 Cars
-</div>
 <body class="flex justify-center items-center h-screen bg-gray-900 flex-col relative">
+  <div
+    class="text-white text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 md:mb-6 drop-shadow-[0_0_3px_cyan]"
+    style="font-family: 'Press Start 2P', cursive;">
+    2 Cars
+  </div>
   <div class="text-white flex flex-row items-center justify-between w-full max-w-xl mb-2"
-  style="font-family: 'Press Start 2P', cursive;">
-  <div id="score" class="text-xs sm:text-sm md:text-base self-start">Score: 0</div>
-  <div id="highscore" class="text-xs sm:text-sm md:text-base text-yellow-400 self-end">High Score: 0</div>
-</div>
+    style="font-family: 'Press Start 2P', cursive;">
+    <div id="score" class="text-xs sm:text-sm md:text-base self-start">Score: 0</div>
+    <div id="highscore" class="text-xs sm:text-sm md:text-base text-yellow-400 self-end">High Score: 0</div>
+  </div>
   <div class="w-full max-w-6xl px-2 flex relative">
-    <!-- Game content -->
+    <!-- Game Area -->
     <div class="game-content flex flex-col items-center w-full">
       <div id="canvas" class="flex w-full justify-center">
-        <div class="icon-container flex flex-col gap-4 m-2 sm:m-4">
-          <img src="/assets/game.svg" alt="game" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10">
-          <img src="/assets/sound.svg" alt="mute" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10">
-        </div>
         <div id="game1" class="relative w-full max-w-xs h-[75vh] overflow-hidden border-2 border-white bg-gray-900">
           <div class="absolute left-1/2 top-0 h-full border-l border-white opacity-50"></div>
           <div id="car1" class="car left bg-contain bg-no-repeat">
@@ -40,16 +37,9 @@
             <img src="/assets/redcar.png" alt="car" class="absolute bottom-0 left-0 w-full h-full" />
           </div>
         </div>
-        <div class="icon-container flex flex-col gap-4 m-2 sm:m-4">
-          <img src="/assets/game.svg" alt="Icon" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10">
-          <img src="/assets/sound.svg" alt="Icon" class="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10">
-        </div>
       </div>
     </div>
-
-    <!-- Icon container with responsive sizing -->
   </div>
-
   <script src="score-manager.js"></script>
   <script src="game.js"></script>
 </body>
