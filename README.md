@@ -1,7 +1,7 @@
 # 2 Cars Game
 
 A simple and engaging arcade game built using **HTML, Tailwind CSS, and JavaScript(ES6)**. Control two cars simultaneously, avoid obstacles, and collect points to achieve the highest score!
-
+[link text](https://2-cars.vercel.app/)
 ## 🕹 How to Play
 - Use **W** or **Left Arrow (⬅)** to control the **Blue Car**.
 - Use **D** or **Right Arrow (➡)** to control the **Red Car**.
